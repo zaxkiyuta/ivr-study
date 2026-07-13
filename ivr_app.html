@@ -152,6 +152,19 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
 /* GENRE PILLS */
 .genre-pill{font-size:11px !important;padding:4px 10px !important;border-color:#b35900 !important;color:#b35900 !important;background:#fffbf0 !important;}
 .genre-pill:hover{background:#b35900 !important;color:#fff !important;}
+
+/* AI TUTOR */
+.aibox{margin-top:10px;}
+.ai-btn{width:100%;padding:10px;border:1px solid #b35900;background:#fffbf0;color:#b35900;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+.ai-btn:hover{background:#b35900;color:#fff;}
+.ai-btn:disabled{opacity:.5;cursor:default;}
+.ai-ask{display:flex;gap:6px;margin-top:8px;}
+.ai-ask input{flex:1;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:13px;}
+.ai-btn2{padding:8px 14px;border:1px solid #b35900;background:#b35900;color:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.ai-ans{margin-top:8px;padding:10px;background:#f7f3ea;border:1px solid #e6dcc8;border-radius:8px;font-size:13px;line-height:1.7;white-space:pre-wrap;}
+.ai-setup{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.ai-setup input{flex:1;min-width:180px;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:13px;}
+.ai-stat{font-size:12px;color:#2e7d32;}
 </style>
 </head>
 <body>
@@ -206,6 +219,13 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
     <label class="bk-btn"><input type="file" accept="application/json,.json" onchange="importData(this)">📂 バックアップから復元</label>
   </div>
   <p class="bk-note">端末・ブラウザのデータを消しても、保存したファイルから苦手記録や学習履歴を復元できます。別の端末へ移すときにも使えます。</p>
+  <div class="sec-title">🤖 AI家庭教師（Gemini・無料枠）</div>
+  <div class="ai-setup">
+    <input type="password" id="gkey" placeholder="Gemini APIキーを貼り付け">
+    <button class="bk-btn" onclick="saveGKey()">保存</button>
+    <span class="ai-stat" id="gkeyStat"></span>
+  </div>
+  <p class="bk-note">Google AI Studio（aistudio.google.com）で無料のAPIキーを取得して貼り付けると、問題ごとに「AIに質問」ができます。キーはこの端末にのみ保存され、Geminiへの問い合わせ時だけ使われます。無料枠内なら料金はかかりません。</p>
 </div>
 
 <!-- QUIZ -->
@@ -228,6 +248,14 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
     <button class="sbtn" id="qSub" onclick="doSubmit()" style="display:none" disabled>回答する</button>
     <div class="rbox" id="qRbox"><div class="rlabel" id="qRL"></div><div class="rans" id="qRA"></div></div>
     <div class="explbox" id="qExpl"><div class="expl-ttl">解説</div><span id="qExplTxt"></span></div>
+    <div class="aibox" id="qAI" style="display:none;">
+      <button class="ai-btn" id="aiExplainBtn" onclick="askAI('explain')">🤖 AIにもっと詳しく解説してもらう</button>
+      <div class="ai-ask">
+        <input type="text" id="aiInput" placeholder="この問題を質問（例：なぜ選4は誤り？）" onkeydown="if(event.key==='Enter'){askAI('ask');}">
+        <button class="ai-btn2" onclick="askAI('ask')">質問</button>
+      </div>
+      <div class="ai-ans" id="aiAns" style="display:none;"></div>
+    </div>
     <button class="nextbtn" id="qNext" onclick="doNext()">次の問題へ</button>
   </div>
 </div>
@@ -642,6 +670,7 @@ function buildWeakBySubject(containerId){
 
 function buildHome(){
   updateBadges();
+  refreshGKeyStat();
   // stats
   document.getElementById('sTotal').textContent=G.totalAns;
   document.getElementById('sRate').textContent=G.totalAns>0?Math.round(G.totalOk/G.totalAns*100)+'%':'-';
@@ -972,6 +1001,10 @@ function renderQ(){
   // reset result/expl/next
   document.getElementById('qRbox').style.display='none';
   document.getElementById('qExpl').style.display='none';
+  document.getElementById('qAI').style.display='none';
+  document.getElementById('aiAns').style.display='none';
+  document.getElementById('aiAns').textContent='';
+  document.getElementById('aiInput').value='';
   document.getElementById('qNext').style.display='none';
   // restore if done
   if(G.doneMap[k]) restoreAnswer(q,k);
@@ -1044,10 +1077,71 @@ function showAnswer(q,userSel,ok){
   // expl
   document.getElementById('qExplTxt').textContent=q.e;
   document.getElementById('qExpl').style.display='block';
+  // ai tutor panel
+  document.getElementById('qAI').style.display='block';
   // next
   var nb=document.getElementById('qNext');
   nb.style.display='block';
   nb.textContent=(Q.idx>=Q.set.length-1)?'結果を見る':'次の問題へ';
+}
+
+// ---------- AI TUTOR (Gemini, free tier, BYOK) ----------
+var GEMINI_MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest'];
+function getGKey(){ return LS('geminiKey')||''; }
+function saveGKey(){
+  var k=(document.getElementById('gkey').value||'').trim();
+  SS('geminiKey',k);
+  refreshGKeyStat();
+}
+function refreshGKeyStat(){
+  var el=document.getElementById('gkeyStat'); if(!el) return;
+  el.textContent=getGKey()?'✓ 保存済み':'（未設定）';
+}
+function callGemini(promptText, cb){
+  var key=getGKey();
+  if(!key){ cb(null,'APIキーが未設定です。ホーム画面の「AI家庭教師」でGeminiのAPIキーを保存してください。'); return; }
+  var mi=0;
+  function tryModel(){
+    if(mi>=GEMINI_MODELS.length){ cb(null,'利用可能なモデルが見つかりませんでした。APIキーやモデル名をご確認ください。'); return; }
+    var url='https://generativelanguage.googleapis.com/v1beta/models/'+GEMINI_MODELS[mi]+':generateContent?key='+encodeURIComponent(key);
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:promptText}]}]})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d.error){
+          if(d.error.code===404 || /not found|not supported|is not found/i.test(d.error.message||'')){ mi++; tryModel(); return; }
+          cb(null,'エラー: '+(d.error.message||JSON.stringify(d.error))); return;
+        }
+        var p=(((d.candidates||[])[0]||{}).content||{}).parts;
+        var t=(p&&p[0]&&p[0].text)?p[0].text:'（応答が空でした。安全フィルタ等の可能性があります）';
+        cb(t);
+      })
+      .catch(function(e){ cb(null,'通信エラー: '+e.message+'（ネットワーク／CORSの可能性）'); });
+  }
+  tryModel();
+}
+function askAI(mode){
+  if(!Q.set.length) return;
+  var q=Q.set[Q.idx];
+  var ansBox=document.getElementById('aiAns');
+  var userQ='';
+  if(mode==='ask'){
+    userQ=(document.getElementById('aiInput').value||'').trim();
+    if(!userQ){ document.getElementById('aiInput').focus(); return; }
+  }
+  var opts=q.o.map(function(o,i){return (i+1)+'. '+o;}).join('\n');
+  var correct=q.c.map(function(x){return x+1;}).join(',');
+  var prompt='あなたはIVR（血管撮影・インターベンション）認定技師試験の専門講師です。以下の過去問について、'
+    +(mode==='ask' ? '受験生の質問に日本語で簡潔に答えてください。' : '選択肢1〜5それぞれがなぜ正しい／誤りかを日本語で分かりやすく簡潔に解説してください。')
+    +'\n\n【問題】'+q.t
+    +'\n【選択肢】\n'+opts
+    +'\n【正解】選択肢 '+correct
+    +'\n【現行アプリの解説】'+q.e
+    +(mode==='ask' ? ('\n\n【受験生の質問】'+userQ) : '');
+  ansBox.style.display='block';
+  ansBox.textContent='🤖 考え中…';
+  callGemini(prompt,function(text,err){
+    ansBox.textContent = err ? ('⚠️ '+err) : text;
+  });
 }
 
 function restoreAnswer(q,k){
@@ -1139,6 +1233,7 @@ function goTab(id){
 
 // init
 buildHome();
+(function(){ var g=document.getElementById('gkey'); if(g){ g.value=getGKey(); } refreshGKeyStat(); })();
 </script>
 </body>
 </html>
