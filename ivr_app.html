@@ -154,6 +154,19 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
 .genre-pill:hover{background:#b35900 !important;color:#fff !important;}
 
 .app-upd{margin-top:6px;font-size:11px;color:#9a8f7a;}
+/* TOPIC SUMMARY */
+.ts-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px;margin:14px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.ts-title{font-weight:700;font-size:14px;margin-bottom:8px;color:#333;}
+.ts-subj{font-weight:700;font-size:13px;color:#b35900;margin:10px 0 4px;border-bottom:1px solid #f0e6d5;padding-bottom:3px;}
+.ts-row{display:flex;justify-content:space-between;align-items:center;padding:4px 2px;font-size:13px;border-bottom:1px dashed #f2f2f2;}
+.ts-row.warn{background:#fff7f2;}
+.ts-t{color:#444;}
+.ts-r{color:#1a7f37;font-weight:600;white-space:nowrap;}
+.ts-row.warn .ts-r{color:#d1242f;}
+.ts-n{color:#999;font-weight:400;font-size:11px;}
+.ts-weak{color:#d1242f;font-size:11px;}
+.ts-empty{color:#999;font-size:12px;padding:4px 2px;}
+.ts-note{font-size:11px;color:#9a8f7a;margin-top:8px;line-height:1.5;}
 .t-time{color:#b35900;font-weight:700;font-size:12px;}
 .hi-d .t-time{color:inherit;}
 
@@ -210,6 +223,11 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
   <div class="wn-card">
     <div class="wn-title">📝 弱点ノート — 間違えた問題の「正しい要点」</div>
     <div id="weakNote"></div>
+  </div>
+  <div class="ts-card">
+    <div class="ts-title">📊 分野別まとめ（医用機器・臨床概論）</div>
+    <div id="topicSummary"></div>
+    <div class="ts-note">正解率は問題を解くたびに記録されます（この機能以降の分）。苦手数は現在の苦手問題の数です。</div>
   </div>
   <button class="drill-btn" id="drillBtn" onclick="startDrill()" disabled>🎯 弱点特訓</button>
   <div class="sec-title">年度・科目を選んで練習</div>
@@ -526,8 +544,10 @@ var G = LS('g') || {
   wrongMap:{},  // key -> true
   doneMap:{},   // key -> 'ok'|'ng'
   history:[],   // [{date,label,ans,ok,mins}]
-  days:{}
+  days:{},
+  attempts:{}   // key -> {c:正解回数, w:不正解回数}（トピック別正解率用・累積）
 };
+G.attempts = G.attempts || {};
 function saveG(){ SS('g',G); }
 
 // ================================================================
@@ -674,6 +694,7 @@ function buildWeakBySubject(containerId){
 function buildHome(){
   updateBadges();
   refreshGKeyStat();
+  buildTopicSummary();
   // stats
   document.getElementById('sTotal').textContent=G.totalAns;
   document.getElementById('sRate').textContent=G.totalAns>0?Math.round(G.totalOk/G.totalAns*100)+'%':'-';
@@ -838,6 +859,39 @@ function buildDrillBtn(){
   b.disabled=(n===0);
   b.textContent=n===0?'🎯 弱点特訓 — まず何問か解くと有効になります':'🎯 弱点特訓 — 苦手分野の似た問題を全年度から20問';
 }
+function buildTopicSummary(){
+  var el=document.getElementById('topicSummary');
+  if(!el) return;
+  var acc={'医用機器':{}, '臨床概論':{}};
+  // 正解率: attemptsから
+  Object.keys(G.attempts||{}).forEach(function(k){
+    var r=qByKey(k); if(!r) return;
+    var subj=keyToSubject(r.dk); if(!acc[subj]) return;
+    var st=G.attempts[k]||{c:0,w:0};
+    topicsOf(r.q).forEach(function(t){ var o=acc[subj][t]||{c:0,w:0,weak:0}; o.c+=(st.c||0); o.w+=(st.w||0); acc[subj][t]=o; });
+  });
+  // 苦手数: wrongMapから
+  Object.keys(G.wrongMap||{}).forEach(function(k){
+    var r=qByKey(k); if(!r) return;
+    var subj=keyToSubject(r.dk); if(!acc[subj]) return;
+    topicsOf(r.q).forEach(function(t){ var o=acc[subj][t]||{c:0,w:0,weak:0}; o.weak++; acc[subj][t]=o; });
+  });
+  var html='';
+  ['医用機器','臨床概論'].forEach(function(subj){
+    html+='<div class="ts-subj">'+subj+'</div>';
+    var topics=Object.keys(acc[subj]);
+    if(!topics.length){ html+='<div class="ts-empty">まだ解いていません</div>'; return; }
+    topics.sort(function(a,b){ var A=acc[subj][a],B=acc[subj][b]; var ra=(A.c+A.w)>0?A.c/(A.c+A.w):2, rb=(B.c+B.w)>0?B.c/(B.c+B.w):2; return ra-rb; });
+    topics.forEach(function(t){
+      var o=acc[subj][t], tot=o.c+o.w, rate=tot>0?Math.round(o.c/tot*100):null;
+      var warn=(rate!==null&&rate<60)||o.weak>0;
+      var rateStr=rate!==null?(rate+'% <span class="ts-n">('+o.c+'/'+tot+')</span>'):'<span class="ts-n">未</span>';
+      html+='<div class="ts-row'+(warn?' warn':'')+'"><span class="ts-t">'+t+'</span><span class="ts-r">'+rateStr+(o.weak>0?' <b class="ts-weak">苦手'+o.weak+'</b>':'')+(warn?' ⚠':'')+'</span></div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
 function buildWeakNote(){
   var el=document.getElementById('weakNote'); if(!el) return;
   var wrongKeys=Object.keys(G.wrongMap);
@@ -888,6 +942,7 @@ function importData(input){
       G.wrongMap=Object.assign({},G.wrongMap||{},d.wrongMap||{});
       G.doneMap=Object.assign({},G.doneMap||{},d.doneMap||{});
       G.days=Object.assign({},G.days||{},d.days||{});
+      var ia=d.attempts||{}; G.attempts=G.attempts||{}; Object.keys(ia).forEach(function(k){var a=G.attempts[k]||{c:0,w:0},b=ia[k]||{c:0,w:0}; G.attempts[k]={c:Math.max(a.c||0,b.c||0), w:Math.max(a.w||0,b.w||0)};});
       G.history=(d.history||[]).concat(G.history||[]).slice(0,500);
       G.totalAns=Math.max(G.totalAns||0,d.totalAns||0);
       G.totalOk=Math.max(G.totalOk||0,d.totalOk||0);
@@ -1049,6 +1104,7 @@ function doSubmit(){
   var ok=sc.join(',')=== su.join(',');
   if(ok){Q.okCount++;delete G.wrongMap[k];G.doneMap[k]='ok';G.totalOk++;}
   else{G.wrongMap[k]=true;G.doneMap[k]='ng';}
+  var st=G.attempts[k]||{c:0,w:0}; if(ok){st.c++;}else{st.w++;} G.attempts[k]=st;
   G.totalAns++;
   G.days[todayStr()]=true;
   saveG();
