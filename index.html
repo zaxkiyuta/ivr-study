@@ -187,7 +187,7 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
 
 <!-- HOME -->
 <div class="scr on" id="scrHome">
-  <div class="home-hero"><h2>IVR認定技師試験 学習アプリ</h2><p>年度・科目を選んで練習できます。学習履歴と苦手問題を自動で記録します。</p><div class="app-upd">最終更新 2026-07-13</div></div>
+  <div class="home-hero"><h2>IVR認定技師試験 学習アプリ</h2><p>年度・科目を選んで練習できます。学習履歴と苦手問題を自動で記録します。</p><div class="app-upd">最終更新 2026-07-15</div></div>
   <div class="today-card">
     <div class="today-title">今日の学習</div>
     <div id="todayInner"><div class="today-empty">まだ学習していません</div></div>
@@ -540,9 +540,10 @@ var Q = {
 // ================================================================
 // UTILS
 // ================================================================
+function normDate(s){ if(!s) return s; var a=(''+s).split('-'); return a.length===3 ? a[0]+'-'+('0'+a[1]).slice(-2)+'-'+('0'+a[2]).slice(-2) : s; }
 function todayStr(){
-  var d=new Date();
-  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  var d=new Date(), p=function(x){return('0'+x).slice(-2);};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
 }
 function nowHM(){
   var d=new Date(), p=function(x){return('0'+x).slice(-2);};
@@ -622,23 +623,19 @@ function buildCalendar(){
   html+='</tr></thead><tbody>';
   // 臨床概論全体+機器+防護の3行
   var rows=[
-    {label:'臨床概論', keys:['c18_clinical','c17_clinical','c16_clinical']},
-    {label:'医用機器', keys:['c18_device','c17_device','c16_device']},
-    {label:'放射線防護', keys:['c18_rad','c17_rad','c16_rad']}
+    {label:'臨床概論', subj:'臨床概論'},
+    {label:'医用機器', subj:'医用機器'},
+    {label:'放射線防護', subj:'放射線防護'}
   ];
   rows.forEach(function(row){
     html+='<tr><td class="cal-date">'+row.label+'</td>';
     days.forEach(function(d){
-      var data=calData[d];
       var matched=null;
-      if(data){
-        // 同じ日の全historyの中でこのkeyに一致するものを集計
-        var ok=0,ans=0;
-        G.history.forEach(function(h){
-          if(h.date===d && row.keys.indexOf(h.label)>-1){ok+=h.ok;ans+=h.ans;}
-        });
-        if(ans>0) matched={ok:ok,ans:ans};
-      }
+      var ok=0,ans=0;
+      G.history.forEach(function(h){
+        if(normDate(h.date)===d && keyToSubject(h.label)===row.subj){ok+=h.ok;ans+=h.ans;}
+      });
+      if(ans>0) matched={ok:ok,ans:ans};
       if(!matched){ html+='<td><span class="cal-cell none">－</span></td>'; }
       else {
         var rate=Math.round(matched.ok/matched.ans*100);
