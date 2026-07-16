@@ -166,6 +166,9 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
 .ts-n{color:#999;font-weight:400;font-size:11px;}
 .ts-weak{color:#d1242f;font-size:11px;}
 .ts-empty{color:#999;font-size:12px;padding:4px 2px;}
+.ts-row.clickable{cursor:pointer;}
+.ts-row.clickable:hover{background:#ffeede;}
+.ts-go{color:#d1242f;font-size:10px;}
 .ts-note{font-size:11px;color:#9a8f7a;margin-top:8px;line-height:1.5;}
 .t-time{color:#b35900;font-weight:700;font-size:12px;}
 .hi-d .t-time{color:inherit;}
@@ -227,14 +230,14 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
   <div class="ts-card">
     <div class="ts-title">📊 分野別まとめ（医用機器・臨床概論）</div>
     <div id="topicSummary"></div>
-    <div class="ts-note">正解率は問題を解くたびに記録されます（この機能以降の分）。苦手数は現在の苦手問題の数です。</div>
+    <div class="ts-note">正解率は問題を解くたびに記録されます（この機能以降の分）。苦手ありの行（▶）をタップすると、その分野の間違えた問題だけ復習できます。</div>
   </div>
   <button class="drill-btn" id="drillBtn" onclick="startDrill()" disabled>🎯 弱点特訓</button>
-  <div class="sec-title">年度・科目を選んで練習</div>
-  <div id="examList"></div>
   <div class="sec-title">苦手問題（教科別）</div>
   <div id="weakBySubject"></div>
   <button class="weak-btn" id="weakBtn" onclick="startWeak()" disabled>苦手問題まとめて復習する（0問）</button>
+  <div class="sec-title">年度・科目を選んで練習</div>
+  <div id="examList"></div>
   <div class="sec-title">データのバックアップ</div>
   <div class="backup-row">
     <button class="bk-btn" onclick="exportData()">💾 バックアップを保存</button>
@@ -600,6 +603,7 @@ function keyToYear(k){
   return m?('第'+m[1]+'回'):'';
 }
 
+function labelYear(k){ var m=(''+k).match(/c(\d+)/); return m?parseInt(m[1]):null; }
 function buildCalendar(){
   var el=document.getElementById('calTable');
   if(!el) return;
@@ -643,9 +647,8 @@ function buildCalendar(){
   html+='</tr></thead><tbody>';
   // 臨床概論全体+機器+防護の3行
   var rows=[
-    {label:'臨床概論', subj:'臨床概論'},
-    {label:'医用機器', subj:'医用機器'},
-    {label:'放射線防護', subj:'放射線防護'}
+    {label:'第18回', yr:18},{label:'第17回', yr:17},{label:'第16回', yr:16},
+    {label:'第15回', yr:15},{label:'第14回', yr:14},{label:'第12回', yr:12}
   ];
   rows.forEach(function(row){
     html+='<tr><td class="cal-date">'+row.label+'</td>';
@@ -653,7 +656,7 @@ function buildCalendar(){
       var matched=null;
       var ok=0,ans=0;
       G.history.forEach(function(h){
-        if(normDate(h.date)===d && keyToSubject(h.label)===row.subj){ok+=h.ok;ans+=h.ans;}
+        if(normDate(h.date)===d && labelYear(h.label)===row.yr){ok+=h.ok;ans+=h.ans;}
       });
       if(ans>0) matched={ok:ok,ans:ans};
       if(!matched){ html+='<td><span class="cal-cell none">－</span></td>'; }
@@ -886,7 +889,9 @@ function buildTopicSummary(){
       var o=acc[subj][t], tot=o.c+o.w, rate=tot>0?Math.round(o.c/tot*100):null;
       var warn=(rate!==null&&rate<60)||o.weak>0;
       var rateStr=rate!==null?(rate+'% <span class="ts-n">('+o.c+'/'+tot+')</span>'):'<span class="ts-n">未</span>';
-      html+='<div class="ts-row'+(warn?' warn':'')+'"><span class="ts-t">'+t+'</span><span class="ts-r">'+rateStr+(o.weak>0?' <b class="ts-weak">苦手'+o.weak+'</b>':'')+(warn?' ⚠':'')+'</span></div>';
+      var cls='ts-row'+(warn?' warn':'')+(o.weak>0?' clickable':'');
+      var onclick=o.weak>0?(' onclick="startWeakByTopic(\''+t+'\')"'):'';
+      html+='<div class="'+cls+'"'+onclick+'><span class="ts-t">'+t+(o.weak>0?' <span class="ts-go">▶</span>':'')+'</span><span class="ts-r">'+rateStr+(o.weak>0?' <b class="ts-weak">苦手'+o.weak+'</b>':'')+(warn?' ⚠':'')+'</span></div>';
     });
   });
   el.innerHTML=html;
@@ -1010,6 +1015,18 @@ function startWeakBySubject(dataKey){
   document.getElementById('nb-quiz').style.display='';
   goTab('quiz');
   renderQ();
+}
+
+function startWeakByTopic(topic){
+  var qs=[];
+  Object.keys(G.wrongMap).forEach(function(k){
+    var r=qByKey(k); if(!r) return;
+    if(topicsOf(r.q).indexOf(topic)>=0) qs.push(cloneQ(r.q, r.dk));
+  });
+  if(!qs.length){ alert('このトピックの苦手問題がありません'); return; }
+  Q.set=qs; Q.key='weak'; Q.idx=0; Q.okCount=0; Q.startMs=Date.now(); Q.selMap={}; G.doneMap={};
+  document.getElementById('nb-quiz').style.display='';
+  goTab('quiz'); renderQ(); window.scrollTo(0,0);
 }
 
 function renderQ(){
