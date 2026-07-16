@@ -154,6 +154,7 @@ nav{background:#ffffff;border-bottom:1px solid #dde1e7;padding:10px 16px;positio
 .genre-pill:hover{background:#b35900 !important;color:#fff !important;}
 
 .app-upd{margin-top:6px;font-size:11px;color:#9a8f7a;}
+.cal-grp td{border-top:2px solid #e6dcc8 !important;}
 /* TOPIC SUMMARY */
 .ts-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px;margin:14px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);}
 .ts-title{font-weight:700;font-size:14px;margin-bottom:8px;color:#333;}
@@ -646,17 +647,17 @@ function buildCalendar(){
   cols.forEach(function(c){ html+='<th>'+c+'</th>'; });
   html+='</tr></thead><tbody>';
   // 臨床概論全体+機器+防護の3行
-  var rows=[
-    {label:'第18回', yr:18},{label:'第17回', yr:17},{label:'第16回', yr:16},
-    {label:'第15回', yr:15},{label:'第14回', yr:14},{label:'第12回', yr:12}
-  ];
+  var years=[18,17,16,15,14,12];
+  var subs=[{s:'臨床概論',n:'臨床'},{s:'医用機器',n:'機器'},{s:'放射線防護',n:'防護'}];
+  var rows=[];
+  years.forEach(function(y){ subs.forEach(function(su,si){ rows.push({label:'第'+y+'回 '+su.n, yr:y, subj:su.s, grp:si===0}); }); });
   rows.forEach(function(row){
-    html+='<tr><td class="cal-date">'+row.label+'</td>';
+    html+='<tr'+(row.grp?' class="cal-grp"':'')+'><td class="cal-date">'+row.label+'</td>';
     days.forEach(function(d){
       var matched=null;
       var ok=0,ans=0;
       G.history.forEach(function(h){
-        if(normDate(h.date)===d && labelYear(h.label)===row.yr){ok+=h.ok;ans+=h.ans;}
+        if(normDate(h.date)===d && labelYear(h.label)===row.yr && keyToSubject(h.label)===row.subj){ok+=h.ok;ans+=h.ans;}
       });
       if(ans>0) matched={ok:ok,ans:ans};
       if(!matched){ html+='<td><span class="cal-cell none">－</span></td>'; }
