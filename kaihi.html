@@ -12,22 +12,20 @@
   --bg:#f6f1ea; --card:#fffdf9; --line:#e6ddcf;
   --ink:#33291f; --sub:#8a7c6a;
   --brand:#7a2e2e; --brand-d:#5f2020;
-  --accent:#c9862b; --good:#2f7d5b; --warn:#b5481f;
+  --accent:#c9862b; --good:#2f7d5b; --warn:#b5481f; --maybe:#c9862b;
   --chip:#f1e8db;
   --shadow:0 2px 10px rgba(80,50,20,.10);
 }
 html,body{background:var(--bg);color:var(--ink);font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo',system-ui,sans-serif;}
-body{min-height:100vh;padding-bottom:96px;line-height:1.5;-webkit-text-size-adjust:100%;}
+body{min-height:100vh;padding-bottom:40px;line-height:1.5;-webkit-text-size-adjust:100%;}
 .wrap{max-width:560px;margin:0 auto;padding:0 14px;}
 
-/* header */
 header{background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;padding:16px 14px 14px;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
 header .wrap{padding:0;}
 .h-title{font-size:20px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;}
 .h-sub{font-size:12px;opacity:.85;margin-top:2px;}
 
-/* tabs */
-.tabs{display:flex;gap:6px;margin-top:12px;}
+.tabs{display:flex;gap:5px;margin-top:12px;}
 .tab{flex:1;text-align:center;padding:9px 0;border-radius:11px 11px 0 0;background:rgba(255,255,255,.16);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;}
 .tab.on{background:var(--bg);color:var(--brand);}
 
@@ -38,7 +36,6 @@ section.on{display:block;}
 .card h2{font-size:14px;color:var(--brand);font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .label{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:5px;}
 
-/* total input */
 .total-row{display:flex;align-items:baseline;gap:6px;background:var(--chip);border:2px solid var(--line);border-radius:12px;padding:10px 14px;}
 .total-row .yen{font-size:18px;color:var(--sub);font-weight:700;}
 #total{flex:1;border:none;background:transparent;font-size:34px;font-weight:800;color:var(--ink);text-align:right;width:100%;outline:none;font-variant-numeric:tabular-nums;}
@@ -49,7 +46,6 @@ section.on{display:block;}
 .seg button{border:none;background:transparent;padding:7px 12px;border-radius:8px;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;}
 .seg button.on{background:var(--brand);color:#fff;}
 
-/* members */
 .member{display:flex;flex-direction:column;gap:8px;padding:11px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:#fff;}
 .m-top{display:flex;align-items:center;gap:8px;}
 .m-name{flex:1;border:none;border-bottom:1.5px solid var(--line);background:transparent;font-size:16px;font-weight:700;padding:4px 2px;outline:none;color:var(--ink);}
@@ -72,12 +68,12 @@ section.on{display:block;}
 .btn-ghost{background:#fff;color:var(--brand);border:1.5px solid var(--line);}
 .btn-row{display:flex;gap:8px;margin-top:10px;}
 .btn-row .btn{flex:1;}
+.btn:disabled{opacity:.5;}
 
 .quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;}
 .quick button{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:20px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
 .quick button:active{background:var(--chip);}
 
-/* result */
 .result{position:sticky;bottom:0;z-index:40;}
 .rgrid{display:flex;gap:8px;margin-bottom:10px;}
 .rbox{flex:1;background:var(--chip);border-radius:11px;padding:10px;text-align:center;}
@@ -87,8 +83,8 @@ section.on{display:block;}
 .rbox.short .v{color:var(--warn);}
 .note{font-size:12px;color:var(--sub);margin-top:2px;}
 .warnbox{background:#fbe9e2;border:1px solid #f0c4b3;color:var(--warn);border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;margin-bottom:10px;}
+.infobox{background:#eef4ef;border:1px solid #cfe3d6;color:var(--good);border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;margin-bottom:10px;}
 
-/* history */
 .hist{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow);}
 .hist .ht{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
 .hist .hname{font-size:15px;font-weight:800;}
@@ -99,20 +95,73 @@ section.on{display:block;}
 .hist .hact .del{color:var(--warn);border-color:#f0c4b3;}
 .empty{text-align:center;color:var(--sub);font-size:13px;padding:30px 10px;}
 
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);}
+/* form inputs */
+.fld{margin-bottom:11px;}
+.fld input[type=text],.fld textarea,.fld input.url{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-weight:600;color:var(--ink);outline:none;background:#fff;font-family:inherit;}
+.fld input:focus,.fld textarea:focus{border-color:var(--accent);}
+.fld textarea{resize:vertical;min-height:52px;}
+.date-row{display:flex;gap:7px;align-items:center;margin-bottom:7px;}
+.date-row input{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:15px;font-weight:600;outline:none;}
+.date-row .rm{border:none;background:var(--chip);color:var(--sub);width:34px;height:34px;border-radius:8px;font-size:18px;flex:none;cursor:pointer;}
+
+/* attendance grid */
+.att-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px;}
+table.att{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap;}
+table.att th,table.att td{border:1px solid var(--line);padding:7px 9px;text-align:center;}
+table.att thead th{background:var(--chip);color:var(--ink);font-weight:800;position:sticky;top:0;}
+table.att td.nm{text-align:left;font-weight:700;position:sticky;left:0;background:#fff;}
+table.att .o{color:var(--good);font-weight:800;}
+table.att .d{color:var(--maybe);font-weight:800;}
+table.att .x{color:var(--warn);font-weight:800;}
+table.att tfoot td{background:var(--chip);font-weight:800;}
+.cmt{font-size:12px;color:var(--sub);margin-top:8px;}
+.cmt b{color:var(--ink);}
+
+/* mark picker (participant) */
+.mark-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:9px 4px;border-bottom:1px dashed var(--line);}
+.mark-row .ml{flex:1;font-weight:700;font-size:15px;}
+.marks{display:inline-flex;gap:5px;}
+.marks button{width:44px;height:40px;border-radius:10px;border:2px solid var(--line);background:#fff;font-size:19px;font-weight:800;color:var(--sub);cursor:pointer;}
+.marks button.on-o{border-color:var(--good);background:#e5f2ea;color:var(--good);}
+.marks button.on-d{border-color:var(--maybe);background:#f6ead2;color:var(--maybe);}
+.marks button.on-x{border-color:var(--warn);background:#fbe9e2;color:var(--warn);}
+
+.share-url{display:flex;gap:6px;margin-top:6px;}
+.share-url input{flex:1;border:1.5px solid var(--line);border-radius:9px;padding:9px 10px;font-size:12px;background:#fff;color:var(--sub);outline:none;}
+.share-url button{border:none;background:var(--brand);color:#fff;border-radius:9px;padding:0 14px;font-weight:800;font-size:13px;cursor:pointer;}
+
+details.help{margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;}
+details.help summary{padding:11px 13px;font-size:13.5px;font-weight:800;color:var(--brand);cursor:pointer;list-style:none;background:var(--chip);}
+details.help summary::-webkit-details-marker{display:none;}
+details.help .body{padding:12px 13px;font-size:13px;line-height:1.75;}
+details.help ol{margin:6px 0 6px 18px;}
+details.help li{margin-bottom:6px;}
+.code{position:relative;background:#2c2620;color:#f3ead9;border-radius:9px;padding:11px;margin-top:8px;font-size:11px;line-height:1.5;overflow-x:auto;font-family:'SFMono-Regular',Consolas,monospace;white-space:pre;}
+.code .cp{position:sticky;top:0;float:right;background:var(--accent);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:88%;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 .small{font-size:11.5px;color:var(--sub);margin-top:8px;line-height:1.6;}
 .foot{text-align:center;font-size:11px;color:var(--sub);padding:14px 0 4px;}
+.evt-sum{font-size:13px;color:var(--sub);}
+.evt-sum b{color:var(--ink);font-size:15px;}
+.pill{display:inline-block;background:var(--chip);border-radius:16px;padding:3px 10px;font-size:12px;font-weight:700;margin:2px 3px 2px 0;}
 </style>
 </head>
 <body>
+
+<!-- ============================================================ -->
+<!-- 幹事モード (通常の画面)                                       -->
+<!-- ============================================================ -->
+<div id="app">
 <header>
   <div class="wrap">
     <div class="h-title">🍻 飲み会 会費わりかん</div>
-    <div class="h-sub">後輩にやさしい傾斜割り・1000円単位で切り上げ</div>
+    <div class="h-sub">出欠あつめ・会費わりかん(幹事用)</div>
     <div class="tabs">
-      <button class="tab on" data-tab="calc">計算</button>
+      <button class="tab on" data-tab="attend">出欠</button>
+      <button class="tab" data-tab="calc">会費</button>
       <button class="tab" data-tab="hist">履歴</button>
     </div>
   </div>
@@ -120,8 +169,88 @@ section.on{display:block;}
 
 <div class="wrap">
 
-<!-- ============ 計算 ============ -->
-<section id="calc" class="on">
+<!-- ============ 出欠(幹事) ============ -->
+<section id="attend" class="on">
+
+  <div class="card">
+    <h2>出欠を集める</h2>
+    <div class="evt-sum" id="curEvtSum" style="margin-bottom:10px;"></div>
+
+    <div id="evtForm">
+      <div class="fld">
+        <div class="label">イベント名</div>
+        <input type="text" id="evtTitle" placeholder="例）5月 歓迎会">
+      </div>
+      <div class="fld">
+        <div class="label">候補日（複数OK・1つでもOK）</div>
+        <div id="dateList"></div>
+        <button class="btn btn-add" id="addDateBtn" style="padding:9px;font-size:13px;">＋ 候補日を追加</button>
+      </div>
+      <div class="fld">
+        <div class="label">場所（任意）</div>
+        <input type="text" id="evtPlace" placeholder="例）居酒屋○○ 駅前店">
+      </div>
+      <div class="fld">
+        <div class="label">ひとこと（任意）</div>
+        <textarea id="evtMemo" placeholder="例）会費は後日、幹事から連絡します"></textarea>
+      </div>
+    </div>
+
+    <div class="fld" style="margin-top:4px;">
+      <div class="label">集計サーバー（Google Apps Script のURL）</div>
+      <input type="text" class="url" id="gasUrl" placeholder="https://script.google.com/macros/s/……/exec" inputmode="url" autocapitalize="off" autocorrect="off">
+      <div class="small">全員の出欠をここに集めます。あなたのGoogleに保存され、外部には渡りません。下の「設定方法」を一度だけ。</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="newEvtBtn">新しい会</button>
+      <button class="btn btn-main" id="publishBtn">出欠URLを発行</button>
+    </div>
+
+    <div id="shareArea" style="display:none;margin-top:12px;">
+      <div class="label">参加者に送るURL</div>
+      <div class="share-url">
+        <input type="text" id="shareInput" readonly>
+        <button id="copyShareBtn">コピー</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="lineShareBtn">LINE等で送る</button>
+        <button class="btn btn-ghost" id="previewBtn">参加者画面を見る</button>
+      </div>
+      <div class="small">※このURLに会費の金額は含まれません。出欠だけを聞きます。</div>
+    </div>
+
+    <details class="help">
+      <summary>▶ 集計サーバーの設定方法（初回だけ・5〜10分）</summary>
+      <div class="body">
+        全員の出欠を1か所に集めるための、無料の置き場所を作ります。あなたのGoogleアカウントだけで完結します。
+        <ol>
+          <li><b>script.google.com</b> を開き「新しいプロジェクト」を作成</li>
+          <li>最初のコードを全部消して、下のコードを貼り付け（右上のコピーボタン）</li>
+          <li>「デプロイ」→「新しいデプロイ」→種類は「ウェブアプリ」</li>
+          <li>「アクセスできるユーザー」を <b>全員</b> にして「デプロイ」</li>
+          <li>表示された <b>ウェブアプリのURL（/exec で終わる）</b> をコピー</li>
+          <li>そのURLを上の「集計サーバー」欄に貼り付け → 完了</li>
+        </ol>
+        一度設定すれば次回以降は自動で入ります。
+        <div class="code" id="gasCode"><button class="cp" id="copyCodeBtn">コピー</button><span id="gasCodeText"></span></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>集まった出欠</h2>
+    <div id="attResult"><div class="empty">まだ会がありません。上で作成してURLを発行してください。</div></div>
+    <div class="btn-row" id="attActions" style="display:none;">
+      <button class="btn btn-ghost" id="refreshBtn">最新を取得</button>
+      <button class="btn btn-main" id="toCalcBtn">参加者を会費へ</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ 会費(幹事) ============ -->
+<section id="calc">
 
   <div class="card">
     <h2>合計金額（お店の支払い）</h2>
@@ -151,8 +280,8 @@ section.on{display:block;}
       <button data-quick="kanji">＋ 幹事(少なめ)</button>
     </div>
     <div class="small">
-      区分の意味：<b>無料</b>=0円 ／ <b>定額</b>=決まった額 ／ <b>割り勘</b>=残りを倍率で頭割り（標準1.0・多め2.0・幹事0.5など）。<br>
-      無料と定額を差し引いた残りを、割り勘メンバーで負担します。
+      区分：<b>無料</b>=0円 ／ <b>定額</b>=決まった額 ／ <b>割り勘</b>=残りを倍率で頭割り。<br>
+      無料と定額を差し引いた残りを、割り勘メンバーで負担します。この画面の金額は幹事だけが見ます。
     </div>
   </div>
 
@@ -176,7 +305,33 @@ section.on{display:block;}
   <div id="histList"></div>
 </section>
 
-<div class="foot">データはこの端末にのみ保存されます（サーバー送信なし）</div>
+<div class="foot">出欠データはあなたのGoogleに、会費データはこの端末に保存されます</div>
+</div>
+</div><!-- /#app -->
+
+<!-- ============================================================ -->
+<!-- 参加者モード (?a=… でURLを開いたとき)                          -->
+<!-- ============================================================ -->
+<div id="guest" style="display:none;">
+  <header><div class="wrap"><div class="h-title">🍻 飲み会の出欠</div><div class="h-sub" id="gEvtTitle"></div></div></header>
+  <div class="wrap">
+    <div class="card">
+      <div class="evt-sum" id="gEvtInfo" style="margin-bottom:12px;"></div>
+      <div class="fld">
+        <div class="label">お名前</div>
+        <input type="text" id="gName" placeholder="なまえ">
+      </div>
+      <div class="label" style="margin-bottom:8px;">参加できますか？（〇=参加 △=未定 ×=不参加）</div>
+      <div id="gMarks"></div>
+      <div class="fld" style="margin-top:12px;">
+        <div class="label">ひとこと（任意）</div>
+        <textarea id="gComment" placeholder="例）少し遅れて参加します"></textarea>
+      </div>
+      <button class="btn btn-main" id="gSubmit" style="margin-top:6px;">回答を送信</button>
+      <div class="small" id="gHint">同じ名前で送ると、あとから修正もできます。</div>
+    </div>
+    <div class="foot">この画面に会費の金額は表示されません</div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -184,78 +339,134 @@ section.on{display:block;}
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
 const yen = n => '¥' + Math.round(n).toLocaleString('ja-JP');
 const ceilTo = (v,u) => u<=1 ? Math.ceil(v) : Math.ceil(v/u)*u;
+const esc = s => (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+// base64url <-> object (UTF-8 safe)
+function b64enc(obj){ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function b64dec(str){ str=str.replace(/-/g,'+').replace(/_/g,'/'); while(str.length%4)str+='='; return JSON.parse(decodeURIComponent(escape(atob(str)))); }
 
 const LS_STATE = 'kaihi_state_v1';
 const LS_HIST  = 'kaihi_history_v1';
+const LS_EVENT = 'kaihi_event_v2';   // 現在編集中の会
+const LS_GAS   = 'kaihi_gas_v1';     // 集計サーバーURL(既定)
 
-let state = { total:'', unit:1000, members:[] };
+// ================= 参加者モード判定 =================
+(function(){
+  const p = new URLSearchParams(location.search);
+  const a = p.get('a');
+  if(a){ initGuest(a); }
+})();
 
-// ---- member factory ----
-function mkMember(over={}){
-  return Object.assign({ id:Date.now()+Math.random().toString(36).slice(2,6),
-    name:'', type:'split', weight:1, fixed:1000 }, over);
+/* ============================================================
+   参加者モード
+   ============================================================ */
+function initGuest(enc){
+  let ev;
+  try{ ev = b64dec(enc); }catch(e){ document.body.innerHTML='<div style="padding:40px;text-align:center;color:#8a7c6a;">URLが正しくないようです。幹事さんに再送をお願いしてください。</div>'; return; }
+  $('#app').style.display='none';
+  $('#guest').style.display='block';
+  $('#gEvtTitle').textContent = ev.t || '出欠のお願い';
+  let info = '<div><b>'+esc(ev.t||'飲み会')+'</b></div>';
+  if(ev.p) info += '<div class="pill">📍 '+esc(ev.p)+'</div>';
+  if(ev.m) info += '<div class="small" style="color:var(--ink);margin-top:6px;">'+esc(ev.m)+'</div>';
+  $('#gEvtInfo').innerHTML = info;
+
+  const dates = (ev.d&&ev.d.length)?ev.d:[{i:'d0',l:'参加できますか？'}];
+  const picks = {};
+  const box = $('#gMarks'); box.innerHTML='';
+  dates.forEach(d=>{
+    const row=document.createElement('div'); row.className='mark-row';
+    row.innerHTML='<span class="ml">'+esc(d.l)+'</span><span class="marks">'+
+      '<button data-m="o">〇</button><button data-m="d">△</button><button data-m="x">×</button></span>';
+    row.querySelectorAll('.marks button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        picks[d.i]=b.dataset.m;
+        row.querySelectorAll('.marks button').forEach(x=>x.className='');
+        b.className='on-'+b.dataset.m;
+      });
+    });
+    box.appendChild(row);
+  });
+
+  // 既に送信済みなら名前を復元
+  const savedName = localStorage.getItem('kaihi_guest_name_'+ev.i);
+  if(savedName) $('#gName').value = savedName;
+
+  $('#gSubmit').addEventListener('click',async ()=>{
+    const name = $('#gName').value.trim();
+    if(!name){ toast('お名前を入力してください'); $('#gName').focus(); return; }
+    if(Object.keys(picks).length===0){ toast('〇△×を選んでください'); return; }
+    if(!ev.e){ toast('集計先が未設定です。幹事さんに連絡してください'); return; }
+    const btn=$('#gSubmit'); btn.disabled=true; btn.textContent='送信中…';
+    try{
+      await fetch(ev.e, { method:'POST', body: JSON.stringify({
+        action:'submit', eventId:ev.i, name:name, marks:picks, comment:$('#gComment').value.trim()
+      })});
+      localStorage.setItem('kaihi_guest_name_'+ev.i, name);
+      btn.textContent='送信しました ✓';
+      $('#gHint').innerHTML='<b style="color:var(--good);">回答を受け付けました。ありがとうございます！</b><br>同じ名前でもう一度送れば修正できます。';
+      toast('送信しました 🍻');
+      setTimeout(()=>{ btn.disabled=false; btn.textContent='回答を修正して再送'; },1500);
+    }catch(err){
+      btn.disabled=false; btn.textContent='回答を送信';
+      toast('送信できませんでした。通信環境をご確認ください');
+    }
+  });
 }
 
-// ---- persistence ----
-function save(){ try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){} }
-function load(){
+/* ============================================================
+   幹事モード
+   ============================================================ */
+
+// ---------- 会費計算 ----------
+let state = { total:'', unit:1000, members:[] };
+function mkMember(over={}){ return Object.assign({ id:uid(), name:'', type:'split', weight:1, fixed:1000 }, over); }
+function saveState(){ try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){} }
+function loadState(){
   try{ const s=JSON.parse(localStorage.getItem(LS_STATE)); if(s&&s.members) state=s; }catch(e){}
-  if(!state.members.length){
-    state.members=[ mkMember({name:'先輩A',type:'split',weight:1}),
-                    mkMember({name:'後輩B',type:'free'}) ];
-  }
+  if(!state.members.length) state.members=[ mkMember({name:'先輩A',type:'split',weight:1}), mkMember({name:'後輩B',type:'free'}) ];
 }
 function getHist(){ try{ return JSON.parse(localStorage.getItem(LS_HIST))||[]; }catch(e){ return []; } }
 function setHist(h){ try{ localStorage.setItem(LS_HIST, JSON.stringify(h)); }catch(e){} }
 
-// ---- calculation ----
 function calc(){
   const total = Math.max(0, parseInt(state.total,10)||0);
   const unit  = state.unit;
-  let fixedSum=0, freeCount=0, weightSum=0;
+  let fixedSum=0, weightSum=0;
   state.members.forEach(m=>{
-    if(m.type==='free') freeCount++;
-    else if(m.type==='fixed') fixedSum += Math.max(0, parseInt(m.fixed,10)||0);
+    if(m.type==='free') return;
+    if(m.type==='fixed') fixedSum += Math.max(0, parseInt(m.fixed,10)||0);
     else weightSum += Math.max(0, parseFloat(m.weight)||0);
   });
   const remain = total - fixedSum;
   const base = (weightSum>0 && remain>0) ? ceilTo(remain/weightSum, unit) : 0;
-
   let collect=0; const amounts={};
   state.members.forEach(m=>{
     let a=0;
-    if(m.type==='free') a=0;
-    else if(m.type==='fixed') a=Math.max(0, parseInt(m.fixed,10)||0);
-    else a = ceilTo(base*(Math.max(0,parseFloat(m.weight)||0)), unit);
+    if(m.type==='fixed') a=Math.max(0, parseInt(m.fixed,10)||0);
+    else if(m.type==='split') a=ceilTo(base*(Math.max(0,parseFloat(m.weight)||0)), unit);
     amounts[m.id]=a; collect+=a;
   });
-  const pool = collect - total;
-  return { total, fixedSum, weightSum, remain, base, collect, pool, amounts, freeCount };
+  return { total, fixedSum, weightSum, remain, base, collect, pool: collect-total, amounts };
 }
-
-// ---- render members ----
-function typeLabel(t){ return t==='free'?'無料':t==='fixed'?'定額':'割り勘'; }
-function tagClass(t){ return t==='free'?'tag-free':t==='fixed'?'tag-fixed':'tag-split'; }
+const typeLabel=t=>t==='free'?'無料':t==='fixed'?'定額':'割り勘';
+const tagClass=t=>t==='free'?'tag-free':t==='fixed'?'tag-fixed':'tag-split';
 
 function renderMembers(r){
   const box=$('#members'); box.innerHTML='';
   state.members.forEach(m=>{
     const el=document.createElement('div'); el.className='member';
-    const amt = r.amounts[m.id]||0;
-
     let extra='';
-    if(m.type==='fixed'){
-      extra=`<div class="m-extra">¥<input type="number" inputmode="numeric" class="mFixed" value="${m.fixed}"></div>`;
-    }else if(m.type==='split'){
-      extra=`<div class="m-extra">倍率<input type="number" inputmode="decimal" step="0.5" class="mWeight" value="${m.weight}"></div>`;
-    }
-
+    if(m.type==='fixed') extra=`<div class="m-extra">¥<input type="number" inputmode="numeric" class="mFixed" value="${m.fixed}"></div>`;
+    else if(m.type==='split') extra=`<div class="m-extra">倍率<input type="number" inputmode="decimal" step="0.5" class="mWeight" value="${m.weight}"></div>`;
     el.innerHTML=`
       <div class="m-top">
-        <input class="m-name" placeholder="なまえ" value="${escapeHtml(m.name)}">
-        <span class="m-amt">${yen(amt)}</span>
+        <input class="m-name" placeholder="なまえ" value="${esc(m.name)}">
+        <span class="m-amt">${yen(r.amounts[m.id]||0)}</span>
         <button class="m-del" title="削除">×</button>
       </div>
       <div class="m-bottom">
@@ -263,165 +474,310 @@ function renderMembers(r){
           <option value="split" ${m.type==='split'?'selected':''}>割り勘</option>
           <option value="fixed" ${m.type==='fixed'?'selected':''}>定額</option>
           <option value="free"  ${m.type==='free' ?'selected':''}>無料</option>
-        </select>
-        ${extra}
+        </select>${extra}
         <span class="m-tag ${tagClass(m.type)}">${typeLabel(m.type)}</span>
       </div>`;
-
-    el.querySelector('.m-name').addEventListener('input',e=>{ m.name=e.target.value; save(); });
+    el.querySelector('.m-name').addEventListener('input',e=>{ m.name=e.target.value; saveState(); });
     el.querySelector('.m-type').addEventListener('change',e=>{ m.type=e.target.value; refresh(); });
-    el.querySelector('.m-del').addEventListener('click',()=>{
-      state.members=state.members.filter(x=>x.id!==m.id); refresh();
-    });
+    el.querySelector('.m-del').addEventListener('click',()=>{ state.members=state.members.filter(x=>x.id!==m.id); refresh(); });
     const wf=el.querySelector('.mWeight'); if(wf) wf.addEventListener('input',e=>{ m.weight=e.target.value; refreshResultOnly(); });
     const ff=el.querySelector('.mFixed'); if(ff) ff.addEventListener('input',e=>{ m.fixed=e.target.value; refreshResultOnly(); });
-
     box.appendChild(el);
   });
 }
-
 function renderResult(r){
-  $('#rCollect').textContent = yen(r.collect);
-  $('#rPool').textContent = yen(Math.abs(r.pool));
-  const poolBox=$('#rPoolBox');
-  poolBox.classList.toggle('short', r.pool<0);
-  poolBox.querySelector('.k').textContent = r.pool<0 ? '不足額' : '幹事プール(余り)';
-
+  $('#rCollect').textContent=yen(r.collect);
+  $('#rPool').textContent=yen(Math.abs(r.pool));
+  const pb=$('#rPoolBox'); pb.classList.toggle('short', r.pool<0);
+  pb.querySelector('.k').textContent = r.pool<0 ? '不足額' : '幹事プール(余り)';
   let note='';
-  if(r.total<=0){ note='合計金額を入力してください。'; }
-  else {
-    const splitN=state.members.filter(m=>m.type==='split').length;
-    note = `合計 ${yen(r.total)}／メンバー ${state.members.length}人`;
-    if(splitN>0) note += `　割り勘の標準1人分＝${yen(r.base)}`;
+  if(r.total<=0) note='合計金額を入力してください。';
+  else{
+    note=`合計 ${yen(r.total)}／メンバー ${state.members.length}人`;
+    if(state.members.some(m=>m.type==='split')) note+=`　割り勘の標準1人分＝${yen(r.base)}`;
   }
   $('#rNote').textContent=note;
-
-  // warnings
   let w='';
-  if(r.total>0 && r.weightSum===0 && r.remain>0){
-    w='割り勘メンバーがいません。無料/定額だけでは残りを負担できません。';
-  }else if(r.remain<0){
-    w='定額の合計が会費を超えています。金額を見直してください。';
-  }
-  $('#warn').innerHTML = w ? `<div class="warnbox">⚠ ${w}</div>` : '';
-
-  // update per-member amounts already in renderMembers
+  if(r.total>0 && r.weightSum===0 && r.remain>0) w='割り勘メンバーがいません。無料/定額だけでは残りを負担できません。';
+  else if(r.remain<0) w='定額の合計が会費を超えています。金額を見直してください。';
+  $('#warn').innerHTML = w?`<div class="warnbox">⚠ ${w}</div>`:'';
 }
-
-// update just the amount labels without rebuilding inputs (keeps focus)
 function refreshResultOnly(){
   const r=calc();
-  document.querySelectorAll('#members .member').forEach((el,i)=>{
-    const m=state.members[i]; if(m) el.querySelector('.m-amt').textContent=yen(r.amounts[m.id]||0);
-  });
-  renderResult(r); save();
+  $$('#members .member').forEach((el,i)=>{ const m=state.members[i]; if(m) el.querySelector('.m-amt').textContent=yen(r.amounts[m.id]||0); });
+  renderResult(r); saveState();
 }
+function refresh(){ const r=calc(); renderMembers(r); renderResult(r); saveState(); }
 
-function refresh(){ const r=calc(); renderMembers(r); renderResult(r); save(); }
-
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-// ---- events ----
 $('#total').addEventListener('input',e=>{ state.total=e.target.value; refreshResultOnly(); });
-
-document.querySelectorAll('#unitSeg button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); state.unit=parseInt(b.dataset.unit,10); refreshResultOnly();
-  });
-});
-
-$('#addBtn').addEventListener('click',()=>{ state.members.push(mkMember({name:''})); refresh(); focusLast(); });
-
-document.querySelectorAll('.quick button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    const q=b.dataset.quick;
-    let m;
-    if(q==='free') m=mkMember({name:'',type:'free'});
-    else if(q==='fixed1000') m=mkMember({name:'',type:'fixed',fixed:1000});
-    else if(q==='kanji') m=mkMember({name:'幹事',type:'split',weight:0.5});
-    else m=mkMember({name:'',type:'split',weight:1});
-    state.members.push(m); refresh(); focusLast();
-  });
-});
-
-function focusLast(){
-  const els=document.querySelectorAll('#members .m-name');
-  if(els.length){ const el=els[els.length-1]; el.focus(); el.scrollIntoView({block:'center',behavior:'smooth'}); }
-}
-
+$$('#unitSeg button').forEach(b=>b.addEventListener('click',()=>{
+  $$('#unitSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  state.unit=parseInt(b.dataset.unit,10); refreshResultOnly();
+}));
+$('#addBtn').addEventListener('click',()=>{ state.members.push(mkMember({name:''})); refresh(); focusLastMember(); });
+$$('.quick button').forEach(b=>b.addEventListener('click',()=>{
+  const q=b.dataset.quick; let m;
+  if(q==='free') m=mkMember({name:'',type:'free'});
+  else if(q==='fixed1000') m=mkMember({name:'',type:'fixed',fixed:1000});
+  else if(q==='kanji') m=mkMember({name:'幹事',type:'split',weight:0.5});
+  else m=mkMember({name:'',type:'split',weight:1});
+  state.members.push(m); refresh(); focusLastMember();
+}));
+function focusLastMember(){ const els=$$('#members .m-name'); if(els.length){ const el=els[els.length-1]; el.focus(); el.scrollIntoView({block:'center',behavior:'smooth'}); } }
 $('#clearBtn').addEventListener('click',()=>{
-  if(!confirm('入力内容をクリアします。よろしいですか？')) return;
+  if(!confirm('会費の入力内容をクリアします。よろしいですか？')) return;
   state={ total:'', unit:state.unit, members:[ mkMember({name:'',type:'split',weight:1}) ] };
   $('#total').value=''; refresh(); toast('クリアしました');
 });
-
 $('#saveBtn').addEventListener('click',()=>{
   const r=calc();
   if(r.total<=0){ toast('先に合計金額を入力してください'); return; }
-  const def = '飲み会 '+new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
-  const name=prompt('この会の名前は？', def);
+  const def='飲み会 '+new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  const name=prompt('この会の名前は？', currentEvent.title||def);
   if(name===null) return;
   const h=getHist();
-  h.unshift({
-    id:Date.now(), name:name||def, date:new Date().toISOString(),
+  h.unshift({ id:Date.now(), name:name||def, date:new Date().toISOString(),
     total:r.total, unit:state.unit, collect:r.collect, pool:r.pool,
-    members:state.members.map(m=>({name:m.name||'(名なし)',type:m.type,weight:m.weight,fixed:m.fixed,amount:r.amounts[m.id]||0}))
-  });
+    members:state.members.map(m=>({name:m.name||'(名なし)',type:m.type,weight:m.weight,fixed:m.fixed,amount:r.amounts[m.id]||0})) });
   setHist(h); renderHist(); toast('保存しました 🍻');
 });
 
-// ---- history ----
+// ---------- 履歴 ----------
 function renderHist(){
   const list=$('#histList'); const h=getHist();
-  if(!h.length){ list.innerHTML='<div class="empty">まだ保存された会はありません。<br>計算タブで「この会を保存」を押すとここに残ります。</div>'; return; }
+  if(!h.length){ list.innerHTML='<div class="empty">まだ保存された会はありません。<br>会費タブで「この会を保存」を押すとここに残ります。</div>'; return; }
   list.innerHTML='';
   h.forEach(ev=>{
-    const el=document.createElement('div'); el.className='hist';
-    const d=new Date(ev.date);
+    const el=document.createElement('div'); el.className='hist'; const d=new Date(ev.date);
     const dstr=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    const lines=ev.members.map(m=>`${escapeHtml(m.name)} ${yen(m.amount)}`).join('・');
+    const lines=ev.members.map(m=>`${esc(m.name)} ${yen(m.amount)}`).join('・');
     el.innerHTML=`
-      <div class="ht"><span class="hname">${escapeHtml(ev.name)}</span><span class="hdate">${dstr}</span></div>
+      <div class="ht"><span class="hname">${esc(ev.name)}</span><span class="hdate">${dstr}</span></div>
       <div class="hsum">合計 ${yen(ev.total)}／集金 ${yen(ev.collect)}／余り ${yen(ev.pool)}（${ev.members.length}人）</div>
       <div class="hsum" style="margin-top:6px;color:var(--ink);">${lines}</div>
-      <div class="hact">
-        <button class="load">呼び出す</button>
-        <button class="del">削除</button>
-      </div>`;
+      <div class="hact"><button class="load">呼び出す</button><button class="del">削除</button></div>`;
     el.querySelector('.load').addEventListener('click',()=>{
       state={ total:String(ev.total), unit:ev.unit||1000,
         members:ev.members.map(m=>mkMember({name:m.name==='(名なし)'?'':m.name,type:m.type,weight:m.weight,fixed:m.fixed})) };
       $('#total').value=ev.total;
-      document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
+      $$('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
       refresh(); switchTab('calc'); toast('呼び出しました');
     });
-    el.querySelector('.del').addEventListener('click',()=>{
-      if(!confirm('この記録を削除しますか？')) return;
-      setHist(getHist().filter(x=>x.id!==ev.id)); renderHist(); toast('削除しました');
-    });
+    el.querySelector('.del').addEventListener('click',()=>{ if(!confirm('この記録を削除しますか？'))return; setHist(getHist().filter(x=>x.id!==ev.id)); renderHist(); toast('削除しました'); });
     list.appendChild(el);
   });
 }
 
-// ---- tabs ----
+// ---------- 出欠(幹事) ----------
+let currentEvent = { id:'', title:'', dates:[], place:'', memo:'', endpoint:'' };
+let lastResponses = [];
+
+function saveEvent(){ try{ localStorage.setItem(LS_EVENT, JSON.stringify(currentEvent)); }catch(e){} }
+function loadEvent(){
+  try{ const e=JSON.parse(localStorage.getItem(LS_EVENT)); if(e&&e.id) currentEvent=e; }catch(e){}
+  if(!currentEvent.endpoint) currentEvent.endpoint = localStorage.getItem(LS_GAS)||'';
+}
+
+function renderDateRows(){
+  const box=$('#dateList'); box.innerHTML='';
+  currentEvent.dates.forEach(d=>{
+    const row=document.createElement('div'); row.className='date-row';
+    row.innerHTML=`<input type="text" value="${esc(d.l)}" placeholder="例）7/25(金) 19:00〜"><button class="rm" title="削除">×</button>`;
+    row.querySelector('input').addEventListener('input',e=>{ d.l=e.target.value; saveEvent(); });
+    row.querySelector('.rm').addEventListener('click',()=>{ currentEvent.dates=currentEvent.dates.filter(x=>x.i!==d.i); renderDateRows(); saveEvent(); });
+    box.appendChild(row);
+  });
+}
+function readEvtForm(){
+  currentEvent.title = $('#evtTitle').value.trim();
+  currentEvent.place = $('#evtPlace').value.trim();
+  currentEvent.memo  = $('#evtMemo').value.trim();
+  currentEvent.endpoint = $('#gasUrl').value.trim();
+}
+function fillEvtForm(){
+  $('#evtTitle').value=currentEvent.title||'';
+  $('#evtPlace').value=currentEvent.place||'';
+  $('#evtMemo').value=currentEvent.memo||'';
+  $('#gasUrl').value=currentEvent.endpoint||'';
+  renderDateRows();
+  const sum=$('#curEvtSum');
+  sum.innerHTML = currentEvent.id
+    ? `<div class="infobox" style="margin:0;">編集中の会：<b>${esc(currentEvent.title||'(名称未設定)')}</b></div>` : '';
+}
+
+$('#evtTitle').addEventListener('input',()=>{ readEvtForm(); saveEvent(); });
+$('#evtPlace').addEventListener('input',()=>{ readEvtForm(); saveEvent(); });
+$('#evtMemo').addEventListener('input',()=>{ readEvtForm(); saveEvent(); });
+$('#gasUrl').addEventListener('input',()=>{ readEvtForm(); if(currentEvent.endpoint) localStorage.setItem(LS_GAS,currentEvent.endpoint); saveEvent(); });
+$('#addDateBtn').addEventListener('click',()=>{ currentEvent.dates.push({i:uid(),l:''}); renderDateRows(); saveEvent(); const ins=$$('#dateList input'); if(ins.length) ins[ins.length-1].focus(); });
+$('#newEvtBtn').addEventListener('click',()=>{
+  if(!confirm('新しい会を作ります。今の入力はクリアされます（履歴・出欠データは残ります）。'))return;
+  currentEvent={ id:'', title:'', dates:[{i:uid(),l:''}], place:'', memo:'', endpoint: localStorage.getItem(LS_GAS)||'' };
+  fillEvtForm(); $('#shareArea').style.display='none'; lastResponses=[]; renderAtt(); saveEvent();
+});
+
+$('#publishBtn').addEventListener('click',()=>{
+  readEvtForm();
+  if(!currentEvent.title){ toast('イベント名を入力してください'); $('#evtTitle').focus(); return; }
+  if(!currentEvent.endpoint){ toast('集計サーバーのURLを設定してください（下の設定方法）'); $('#gasUrl').focus(); return; }
+  currentEvent.dates = currentEvent.dates.filter(d=>d.l.trim());
+  if(!currentEvent.dates.length) currentEvent.dates=[{i:uid(),l:'参加できますか？'}];
+  if(!currentEvent.id) currentEvent.id = uid();
+  saveEvent(); fillEvtForm();
+  const url = shareUrl();
+  $('#shareInput').value=url; $('#shareArea').style.display='block';
+  $('#shareArea').scrollIntoView({behavior:'smooth',block:'center'});
+  toast('URLを発行しました');
+  renderAtt();
+});
+
+function shareUrl(){
+  const payload={ i:currentEvent.id, t:currentEvent.title, d:currentEvent.dates.map(d=>({i:d.i,l:d.l})),
+    p:currentEvent.place, m:currentEvent.memo, e:currentEvent.endpoint };
+  return location.origin + location.pathname + '?a=' + b64enc(payload);
+}
+$('#copyShareBtn').addEventListener('click',()=>copyText($('#shareInput').value,'URLをコピーしました'));
+$('#lineShareBtn').addEventListener('click',async ()=>{
+  const url=$('#shareInput').value;
+  const text=`【${currentEvent.title}】出欠のお願いです。下のリンクから〇△×で回答してください🙏\n${url}`;
+  if(navigator.share){ try{ await navigator.share({title:currentEvent.title,text:text}); }catch(e){} }
+  else copyText(text,'メッセージをコピーしました（LINEに貼り付けてください）');
+});
+$('#previewBtn').addEventListener('click',()=>{ window.open($('#shareInput').value,'_blank'); });
+
+// 集計取得・表示
+$('#refreshBtn').addEventListener('click',fetchResponses);
+async function fetchResponses(){
+  if(!currentEvent.id||!currentEvent.endpoint){ toast('先に出欠URLを発行してください'); return; }
+  const btn=$('#refreshBtn'); btn.disabled=true; btn.textContent='取得中…';
+  try{
+    const res=await fetch(currentEvent.endpoint+'?eventId='+encodeURIComponent(currentEvent.id)+'&_='+Date.now());
+    const data=await res.json();
+    lastResponses = (data&&data.responses)?data.responses:[];
+    renderAtt(); toast('最新を取得しました');
+  }catch(e){ toast('取得できませんでした。URLと通信環境をご確認ください'); }
+  finally{ btn.disabled=false; btn.textContent='最新を取得'; }
+}
+
+function markCell(m){ return m==='o'?'<span class="o">〇</span>':m==='d'?'<span class="d">△</span>':m==='x'?'<span class="x">×</span>':'<span style="color:#ccc">-</span>'; }
+function renderAtt(){
+  const box=$('#attResult'); const act=$('#attActions');
+  if(!currentEvent.id){ box.innerHTML='<div class="empty">まだ会がありません。上で作成してURLを発行してください。</div>'; act.style.display='none'; return; }
+  act.style.display='flex';
+  const dates=currentEvent.dates;
+  if(!lastResponses.length){ box.innerHTML='<div class="empty">まだ回答がありません。<br>「最新を取得」で更新してください。</div>'; }
+  else{
+    let head='<tr><th>名前</th>'+dates.map(d=>'<th>'+esc(d.l)+'</th>').join('')+'</tr>';
+    let rows=lastResponses.map(r=>{
+      const marks=r.marks||{};
+      return '<tr><td class="nm">'+esc(r.name)+'</td>'+dates.map(d=>'<td>'+markCell(marks[d.i])+'</td>').join('')+'</tr>';
+    }).join('');
+    // 集計行(〇の数)
+    let foot='<tr><td class="nm">〇の数</td>'+dates.map(d=>{
+      const n=lastResponses.filter(r=>(r.marks||{})[d.i]==='o').length; return '<td>'+n+'</td>';
+    }).join('')+'</tr>';
+    let cmts=lastResponses.filter(r=>r.comment).map(r=>'<div class="cmt"><b>'+esc(r.name)+'：</b>'+esc(r.comment)+'</div>').join('');
+    box.innerHTML='<div class="att-wrap"><table class="att"><thead>'+head+'</thead><tbody>'+rows+'</tbody><tfoot>'+foot+'</tfoot></table></div>'
+      +'<div class="small">回答 '+lastResponses.length+'人</div>'+cmts;
+  }
+}
+
+// 〇の人を会費計算へ
+$('#toCalcBtn').addEventListener('click',()=>{
+  if(!lastResponses.length){ toast('先に「最新を取得」で出欠を取り込んでください'); return; }
+  const dates=currentEvent.dates;
+  let dateId=dates[0].i;
+  if(dates.length>1){
+    const labels=dates.map((d,i)=>`${i+1}: ${d.l}`).join('\n');
+    const ans=prompt('どの候補日の参加者を会費へ入れますか？番号を入力：\n'+labels,'1');
+    if(ans===null) return;
+    const idx=parseInt(ans,10)-1; if(idx>=0&&idx<dates.length) dateId=dates[idx].i; else { toast('番号が正しくありません'); return; }
+  }
+  const attendees=lastResponses.filter(r=>(r.marks||{})[dateId]==='o');
+  if(!attendees.length){ toast('その日に〇の人がいません'); return; }
+  state.members = attendees.map(r=>mkMember({name:r.name,type:'split',weight:1}));
+  refresh(); switchTab('calc'); toast(attendees.length+'人を会費へ入れました');
+});
+
+// ---------- タブ ----------
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+  $$('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  $$('#app section').forEach(s=>s.classList.toggle('on',s.id===t));
   if(t==='hist') renderHist();
   window.scrollTo(0,0);
 }
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 
-// ---- toast ----
+// ---------- 共通 ----------
 let toastT;
-function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),1800); }
+function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2200); }
+async function copyText(text,msg){
+  try{ await navigator.clipboard.writeText(text); toast(msg); }
+  catch(e){ const t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); try{document.execCommand('copy'); toast(msg);}catch(_){toast('コピーできませんでした');} document.body.removeChild(t); }
+}
 
-// ---- init ----
-load();
+// GASコード（設定方法内）
+const GAS_CODE = `// 飲み会 出欠あつめ 用スクリプト（このまま貼り付けてデプロイ）
+function doPost(e){
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try{
+    var b = JSON.parse(e.postData.contents);
+    var sh = sheetFor_(b.eventId);
+    var data = sh.getDataRange().getValues();
+    var row = -1;
+    for(var i=1;i<data.length;i++){ if(String(data[i][0])===String(b.name)){ row=i+1; break; } }
+    var rec = [b.name, JSON.stringify(b.marks||{}), b.comment||'', new Date()];
+    if(row>0) sh.getRange(row,1,1,4).setValues([rec]);
+    else sh.appendRow(rec);
+    return json_({ok:true});
+  } finally { lock.releaseLock(); }
+}
+function doGet(e){
+  var id = e.parameter.eventId;
+  var out = [];
+  var ss = book_();
+  var sh = ss.getSheetByName(id);
+  if(sh){
+    var d = sh.getDataRange().getValues();
+    for(var i=1;i<d.length;i++){
+      var marks = {}; try{ marks = JSON.parse(d[i][1]); }catch(_){}
+      out.push({ name:d[i][0], marks:marks, comment:d[i][2] });
+    }
+  }
+  return json_({ok:true, responses:out});
+}
+function book_(){
+  var p = PropertiesService.getScriptProperties();
+  var id = p.getProperty('BOOK');
+  if(id){ try{ return SpreadsheetApp.openById(id); }catch(_){} }
+  var ss = SpreadsheetApp.create('飲み会 出欠データ');
+  p.setProperty('BOOK', ss.getId());
+  return ss;
+}
+function sheetFor_(id){
+  var ss = book_();
+  var sh = ss.getSheetByName(id);
+  if(!sh){ sh = ss.insertSheet(id); sh.appendRow(['name','marks','comment','updatedAt']); }
+  return sh;
+}
+function json_(o){
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}`;
+$('#gasCodeText').textContent = GAS_CODE;
+$('#copyCodeBtn').addEventListener('click',()=>copyText(GAS_CODE,'コードをコピーしました'));
+
+// ---------- 初期化 ----------
+loadState();
 $('#total').value=state.total||'';
-document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
+$$('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
 refresh();
+
+loadEvent();
+if(!currentEvent.dates||!currentEvent.dates.length) currentEvent.dates=[{i:uid(),l:''}];
+fillEvtForm();
+if(currentEvent.id){ $('#shareInput').value=shareUrl(); $('#shareArea').style.display='block'; }
+renderAtt();
 </script>
 </body>
 </html>
