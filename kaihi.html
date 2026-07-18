@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7a2e2e">
+<title>飲み会 会費わりかん</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#f6f1ea; --card:#fffdf9; --line:#e6ddcf;
+  --ink:#33291f; --sub:#8a7c6a;
+  --brand:#7a2e2e; --brand-d:#5f2020;
+  --accent:#c9862b; --good:#2f7d5b; --warn:#b5481f;
+  --chip:#f1e8db;
+  --shadow:0 2px 10px rgba(80,50,20,.10);
+}
+html,body{background:var(--bg);color:var(--ink);font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo',system-ui,sans-serif;}
+body{min-height:100vh;padding-bottom:96px;line-height:1.5;-webkit-text-size-adjust:100%;}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px;}
+
+/* header */
+header{background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;padding:16px 14px 14px;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+header .wrap{padding:0;}
+.h-title{font-size:20px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;}
+.h-sub{font-size:12px;opacity:.85;margin-top:2px;}
+
+/* tabs */
+.tabs{display:flex;gap:6px;margin-top:12px;}
+.tab{flex:1;text-align:center;padding:9px 0;border-radius:11px 11px 0 0;background:rgba(255,255,255,.16);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;}
+.tab.on{background:var(--bg);color:var(--brand);}
+
+section{display:none;padding-top:16px;}
+section.on{display:block;}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card h2{font-size:14px;color:var(--brand);font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.label{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:5px;}
+
+/* total input */
+.total-row{display:flex;align-items:baseline;gap:6px;background:var(--chip);border:2px solid var(--line);border-radius:12px;padding:10px 14px;}
+.total-row .yen{font-size:18px;color:var(--sub);font-weight:700;}
+#total{flex:1;border:none;background:transparent;font-size:34px;font-weight:800;color:var(--ink);text-align:right;width:100%;outline:none;font-variant-numeric:tabular-nums;}
+#total::placeholder{color:#cbbfae;}
+
+.opt-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;}
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;gap:3px;}
+.seg button{border:none;background:transparent;padding:7px 12px;border-radius:8px;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;}
+.seg button.on{background:var(--brand);color:#fff;}
+
+/* members */
+.member{display:flex;flex-direction:column;gap:8px;padding:11px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:#fff;}
+.m-top{display:flex;align-items:center;gap:8px;}
+.m-name{flex:1;border:none;border-bottom:1.5px solid var(--line);background:transparent;font-size:16px;font-weight:700;padding:4px 2px;outline:none;color:var(--ink);}
+.m-name:focus{border-color:var(--accent);}
+.m-amt{font-size:17px;font-weight:800;color:var(--brand);white-space:nowrap;font-variant-numeric:tabular-nums;min-width:74px;text-align:right;}
+.m-del{border:none;background:var(--chip);color:var(--sub);width:30px;height:30px;border-radius:8px;font-size:17px;cursor:pointer;line-height:1;flex:none;}
+.m-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.m-type{border:1.5px solid var(--line);border-radius:9px;padding:7px 8px;font-size:13px;font-weight:700;background:#fff;color:var(--ink);outline:none;}
+.m-extra{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--sub);font-weight:700;}
+.m-extra input{width:74px;border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;font-size:14px;text-align:right;outline:none;font-weight:700;}
+.m-extra input:focus{border-color:var(--accent);}
+.m-tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;}
+.tag-free{background:#e5f2ea;color:var(--good);}
+.tag-fixed{background:#f6ead2;color:var(--accent);}
+.tag-split{background:#f3e3e3;color:var(--brand);}
+
+.btn{display:block;width:100%;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;}
+.btn-add{background:var(--chip);color:var(--brand);border:1.5px dashed var(--accent);margin-top:2px;}
+.btn-main{background:var(--brand);color:#fff;box-shadow:var(--shadow);}
+.btn-ghost{background:#fff;color:var(--brand);border:1.5px solid var(--line);}
+.btn-row{display:flex;gap:8px;margin-top:10px;}
+.btn-row .btn{flex:1;}
+
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;}
+.quick button{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:20px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.quick button:active{background:var(--chip);}
+
+/* result */
+.result{position:sticky;bottom:0;z-index:40;}
+.rgrid{display:flex;gap:8px;margin-bottom:10px;}
+.rbox{flex:1;background:var(--chip);border-radius:11px;padding:10px;text-align:center;}
+.rbox .k{font-size:11px;color:var(--sub);font-weight:700;}
+.rbox .v{font-size:20px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px;}
+.rbox.pool .v{color:var(--good);}
+.rbox.short .v{color:var(--warn);}
+.note{font-size:12px;color:var(--sub);margin-top:2px;}
+.warnbox{background:#fbe9e2;border:1px solid #f0c4b3;color:var(--warn);border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;margin-bottom:10px;}
+
+/* history */
+.hist{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow);}
+.hist .ht{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+.hist .hname{font-size:15px;font-weight:800;}
+.hist .hdate{font-size:11px;color:var(--sub);font-weight:700;white-space:nowrap;}
+.hist .hsum{font-size:12.5px;color:var(--sub);margin-top:4px;}
+.hist .hact{display:flex;gap:8px;margin-top:9px;}
+.hist .hact button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;}
+.hist .hact .del{color:var(--warn);border-color:#f0c4b3;}
+.empty{text-align:center;color:var(--sub);font-size:13px;padding:30px 10px;}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.small{font-size:11.5px;color:var(--sub);margin-top:8px;line-height:1.6;}
+.foot{text-align:center;font-size:11px;color:var(--sub);padding:14px 0 4px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="h-title">🍻 飲み会 会費わりかん</div>
+    <div class="h-sub">後輩にやさしい傾斜割り・1000円単位で切り上げ</div>
+    <div class="tabs">
+      <button class="tab on" data-tab="calc">計算</button>
+      <button class="tab" data-tab="hist">履歴</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 計算 ============ -->
+<section id="calc" class="on">
+
+  <div class="card">
+    <h2>合計金額（お店の支払い）</h2>
+    <div class="total-row">
+      <span class="yen">¥</span>
+      <input id="total" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+    </div>
+    <div class="opt-row">
+      <span class="label" style="margin:0;">切り上げ単位</span>
+      <div class="seg" id="unitSeg">
+        <button data-unit="100">100円</button>
+        <button data-unit="500">500円</button>
+        <button data-unit="1000" class="on">1000円</button>
+        <button data-unit="1">なし</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>メンバー</h2>
+    <div id="members"></div>
+    <button class="btn btn-add" id="addBtn">＋ メンバーを追加</button>
+    <div class="quick" style="margin-top:10px;">
+      <button data-quick="free">＋ 後輩(無料)</button>
+      <button data-quick="fixed1000">＋ 2年目(1000円)</button>
+      <button data-quick="split">＋ 先輩(割り勘)</button>
+      <button data-quick="kanji">＋ 幹事(少なめ)</button>
+    </div>
+    <div class="small">
+      区分の意味：<b>無料</b>=0円 ／ <b>定額</b>=決まった額 ／ <b>割り勘</b>=残りを倍率で頭割り（標準1.0・多め2.0・幹事0.5など）。<br>
+      無料と定額を差し引いた残りを、割り勘メンバーで負担します。
+    </div>
+  </div>
+
+  <div class="card result">
+    <div id="warn"></div>
+    <div class="rgrid">
+      <div class="rbox"><div class="k">集金合計</div><div class="v" id="rCollect">¥0</div></div>
+      <div class="rbox pool" id="rPoolBox"><div class="k">幹事プール(余り)</div><div class="v" id="rPool">¥0</div></div>
+    </div>
+    <div class="note" id="rNote">合計金額とメンバーを入力してください。</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="clearBtn">クリア</button>
+      <button class="btn btn-main" id="saveBtn">この会を保存</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ 履歴 ============ -->
+<section id="hist">
+  <div id="histList"></div>
+</section>
+
+<div class="foot">データはこの端末にのみ保存されます（サーバー送信なし）</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const yen = n => '¥' + Math.round(n).toLocaleString('ja-JP');
+const ceilTo = (v,u) => u<=1 ? Math.ceil(v) : Math.ceil(v/u)*u;
+
+const LS_STATE = 'kaihi_state_v1';
+const LS_HIST  = 'kaihi_history_v1';
+
+let state = { total:'', unit:1000, members:[] };
+
+// ---- member factory ----
+function mkMember(over={}){
+  return Object.assign({ id:Date.now()+Math.random().toString(36).slice(2,6),
+    name:'', type:'split', weight:1, fixed:1000 }, over);
+}
+
+// ---- persistence ----
+function save(){ try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem(LS_STATE)); if(s&&s.members) state=s; }catch(e){}
+  if(!state.members.length){
+    state.members=[ mkMember({name:'先輩A',type:'split',weight:1}),
+                    mkMember({name:'後輩B',type:'free'}) ];
+  }
+}
+function getHist(){ try{ return JSON.parse(localStorage.getItem(LS_HIST))||[]; }catch(e){ return []; } }
+function setHist(h){ try{ localStorage.setItem(LS_HIST, JSON.stringify(h)); }catch(e){} }
+
+// ---- calculation ----
+function calc(){
+  const total = Math.max(0, parseInt(state.total,10)||0);
+  const unit  = state.unit;
+  let fixedSum=0, freeCount=0, weightSum=0;
+  state.members.forEach(m=>{
+    if(m.type==='free') freeCount++;
+    else if(m.type==='fixed') fixedSum += Math.max(0, parseInt(m.fixed,10)||0);
+    else weightSum += Math.max(0, parseFloat(m.weight)||0);
+  });
+  const remain = total - fixedSum;
+  const base = (weightSum>0 && remain>0) ? ceilTo(remain/weightSum, unit) : 0;
+
+  let collect=0; const amounts={};
+  state.members.forEach(m=>{
+    let a=0;
+    if(m.type==='free') a=0;
+    else if(m.type==='fixed') a=Math.max(0, parseInt(m.fixed,10)||0);
+    else a = ceilTo(base*(Math.max(0,parseFloat(m.weight)||0)), unit);
+    amounts[m.id]=a; collect+=a;
+  });
+  const pool = collect - total;
+  return { total, fixedSum, weightSum, remain, base, collect, pool, amounts, freeCount };
+}
+
+// ---- render members ----
+function typeLabel(t){ return t==='free'?'無料':t==='fixed'?'定額':'割り勘'; }
+function tagClass(t){ return t==='free'?'tag-free':t==='fixed'?'tag-fixed':'tag-split'; }
+
+function renderMembers(r){
+  const box=$('#members'); box.innerHTML='';
+  state.members.forEach(m=>{
+    const el=document.createElement('div'); el.className='member';
+    const amt = r.amounts[m.id]||0;
+
+    let extra='';
+    if(m.type==='fixed'){
+      extra=`<div class="m-extra">¥<input type="number" inputmode="numeric" class="mFixed" value="${m.fixed}"></div>`;
+    }else if(m.type==='split'){
+      extra=`<div class="m-extra">倍率<input type="number" inputmode="decimal" step="0.5" class="mWeight" value="${m.weight}"></div>`;
+    }
+
+    el.innerHTML=`
+      <div class="m-top">
+        <input class="m-name" placeholder="なまえ" value="${escapeHtml(m.name)}">
+        <span class="m-amt">${yen(amt)}</span>
+        <button class="m-del" title="削除">×</button>
+      </div>
+      <div class="m-bottom">
+        <select class="m-type">
+          <option value="split" ${m.type==='split'?'selected':''}>割り勘</option>
+          <option value="fixed" ${m.type==='fixed'?'selected':''}>定額</option>
+          <option value="free"  ${m.type==='free' ?'selected':''}>無料</option>
+        </select>
+        ${extra}
+        <span class="m-tag ${tagClass(m.type)}">${typeLabel(m.type)}</span>
+      </div>`;
+
+    el.querySelector('.m-name').addEventListener('input',e=>{ m.name=e.target.value; save(); });
+    el.querySelector('.m-type').addEventListener('change',e=>{ m.type=e.target.value; refresh(); });
+    el.querySelector('.m-del').addEventListener('click',()=>{
+      state.members=state.members.filter(x=>x.id!==m.id); refresh();
+    });
+    const wf=el.querySelector('.mWeight'); if(wf) wf.addEventListener('input',e=>{ m.weight=e.target.value; refreshResultOnly(); });
+    const ff=el.querySelector('.mFixed'); if(ff) ff.addEventListener('input',e=>{ m.fixed=e.target.value; refreshResultOnly(); });
+
+    box.appendChild(el);
+  });
+}
+
+function renderResult(r){
+  $('#rCollect').textContent = yen(r.collect);
+  $('#rPool').textContent = yen(Math.abs(r.pool));
+  const poolBox=$('#rPoolBox');
+  poolBox.classList.toggle('short', r.pool<0);
+  poolBox.querySelector('.k').textContent = r.pool<0 ? '不足額' : '幹事プール(余り)';
+
+  let note='';
+  if(r.total<=0){ note='合計金額を入力してください。'; }
+  else {
+    const splitN=state.members.filter(m=>m.type==='split').length;
+    note = `合計 ${yen(r.total)}／メンバー ${state.members.length}人`;
+    if(splitN>0) note += `　割り勘の標準1人分＝${yen(r.base)}`;
+  }
+  $('#rNote').textContent=note;
+
+  // warnings
+  let w='';
+  if(r.total>0 && r.weightSum===0 && r.remain>0){
+    w='割り勘メンバーがいません。無料/定額だけでは残りを負担できません。';
+  }else if(r.remain<0){
+    w='定額の合計が会費を超えています。金額を見直してください。';
+  }
+  $('#warn').innerHTML = w ? `<div class="warnbox">⚠ ${w}</div>` : '';
+
+  // update per-member amounts already in renderMembers
+}
+
+// update just the amount labels without rebuilding inputs (keeps focus)
+function refreshResultOnly(){
+  const r=calc();
+  document.querySelectorAll('#members .member').forEach((el,i)=>{
+    const m=state.members[i]; if(m) el.querySelector('.m-amt').textContent=yen(r.amounts[m.id]||0);
+  });
+  renderResult(r); save();
+}
+
+function refresh(){ const r=calc(); renderMembers(r); renderResult(r); save(); }
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ---- events ----
+$('#total').addEventListener('input',e=>{ state.total=e.target.value; refreshResultOnly(); });
+
+document.querySelectorAll('#unitSeg button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); state.unit=parseInt(b.dataset.unit,10); refreshResultOnly();
+  });
+});
+
+$('#addBtn').addEventListener('click',()=>{ state.members.push(mkMember({name:''})); refresh(); focusLast(); });
+
+document.querySelectorAll('.quick button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const q=b.dataset.quick;
+    let m;
+    if(q==='free') m=mkMember({name:'',type:'free'});
+    else if(q==='fixed1000') m=mkMember({name:'',type:'fixed',fixed:1000});
+    else if(q==='kanji') m=mkMember({name:'幹事',type:'split',weight:0.5});
+    else m=mkMember({name:'',type:'split',weight:1});
+    state.members.push(m); refresh(); focusLast();
+  });
+});
+
+function focusLast(){
+  const els=document.querySelectorAll('#members .m-name');
+  if(els.length){ const el=els[els.length-1]; el.focus(); el.scrollIntoView({block:'center',behavior:'smooth'}); }
+}
+
+$('#clearBtn').addEventListener('click',()=>{
+  if(!confirm('入力内容をクリアします。よろしいですか？')) return;
+  state={ total:'', unit:state.unit, members:[ mkMember({name:'',type:'split',weight:1}) ] };
+  $('#total').value=''; refresh(); toast('クリアしました');
+});
+
+$('#saveBtn').addEventListener('click',()=>{
+  const r=calc();
+  if(r.total<=0){ toast('先に合計金額を入力してください'); return; }
+  const def = '飲み会 '+new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  const name=prompt('この会の名前は？', def);
+  if(name===null) return;
+  const h=getHist();
+  h.unshift({
+    id:Date.now(), name:name||def, date:new Date().toISOString(),
+    total:r.total, unit:state.unit, collect:r.collect, pool:r.pool,
+    members:state.members.map(m=>({name:m.name||'(名なし)',type:m.type,weight:m.weight,fixed:m.fixed,amount:r.amounts[m.id]||0}))
+  });
+  setHist(h); renderHist(); toast('保存しました 🍻');
+});
+
+// ---- history ----
+function renderHist(){
+  const list=$('#histList'); const h=getHist();
+  if(!h.length){ list.innerHTML='<div class="empty">まだ保存された会はありません。<br>計算タブで「この会を保存」を押すとここに残ります。</div>'; return; }
+  list.innerHTML='';
+  h.forEach(ev=>{
+    const el=document.createElement('div'); el.className='hist';
+    const d=new Date(ev.date);
+    const dstr=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const lines=ev.members.map(m=>`${escapeHtml(m.name)} ${yen(m.amount)}`).join('・');
+    el.innerHTML=`
+      <div class="ht"><span class="hname">${escapeHtml(ev.name)}</span><span class="hdate">${dstr}</span></div>
+      <div class="hsum">合計 ${yen(ev.total)}／集金 ${yen(ev.collect)}／余り ${yen(ev.pool)}（${ev.members.length}人）</div>
+      <div class="hsum" style="margin-top:6px;color:var(--ink);">${lines}</div>
+      <div class="hact">
+        <button class="load">呼び出す</button>
+        <button class="del">削除</button>
+      </div>`;
+    el.querySelector('.load').addEventListener('click',()=>{
+      state={ total:String(ev.total), unit:ev.unit||1000,
+        members:ev.members.map(m=>mkMember({name:m.name==='(名なし)'?'':m.name,type:m.type,weight:m.weight,fixed:m.fixed})) };
+      $('#total').value=ev.total;
+      document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
+      refresh(); switchTab('calc'); toast('呼び出しました');
+    });
+    el.querySelector('.del').addEventListener('click',()=>{
+      if(!confirm('この記録を削除しますか？')) return;
+      setHist(getHist().filter(x=>x.id!==ev.id)); renderHist(); toast('削除しました');
+    });
+    list.appendChild(el);
+  });
+}
+
+// ---- tabs ----
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+  if(t==='hist') renderHist();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+
+// ---- toast ----
+let toastT;
+function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),1800); }
+
+// ---- init ----
+load();
+$('#total').value=state.total||'';
+document.querySelectorAll('#unitSeg button').forEach(x=>x.classList.toggle('on', parseInt(x.dataset.unit,10)===state.unit));
+refresh();
+</script>
+</body>
+</html>
